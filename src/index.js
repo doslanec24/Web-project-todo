@@ -1,13 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import Home from './screens/Home';
+import Authentication,{AuthenticationMode} from './screens/Authentication.js';
+import ErrorPage from './screens/ErrorPage';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute'
+import UserProvider from './context/UserProvider'
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+
+
+const router = createBrowserRouter([
+  {
+    errorElement: <ErrorPage />
+  },
+  {
+    path: "/signin",
+    element: <Authentication authenticationMode="Login" />,
+  },
+  {
+    path: '/signup',
+    element: <Authentication authenticationMode="Register" />
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      }
+    ]
+  }
+])
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <UserProvider>
+      <RouterProvider router={router}/>
+    </UserProvider>
   </React.StrictMode>
 );
 
@@ -15,3 +48,4 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
